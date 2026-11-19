@@ -59,6 +59,22 @@ From this directory:
 forge test -vv
 ```
 
+## Scout GitHub Actions
+
+Three manually triggered workflows use the [AuditHub Scout actions](https://github.com/Veridise/audithub-actions):
+
+| Workflow | Purpose |
+| --- | --- |
+| [Scout submit](.github/workflows/scout-submit.yml) | Start a scan and return its task ID and AuditHub link. |
+| [Scout wait](.github/workflows/scout-wait.yml) | Wait for an existing task ID and report finding counts. |
+| [Scout submit and wait](.github/workflows/scout-submit-and-wait.yml) | Start a scan and wait for its finding counts in one run. |
+
+Set the repository secrets `AUDITHUB_CLIENT_ID` and `AUDITHUB_CLIENT_SECRET`, and the repository variables `AUDITHUB_ORGANIZATION_ID`, `AUDITHUB_PROJECT_ID`, and `AUDITHUB_SCOUT_BUDGET` before running them. The OIDC client needs access to the AuditHub organization and project, permission to create versions and Scout tasks, and permission to read task details. The budget variable must name an available Scout budget class.
+
+Run a workflow from the repository's **Actions** tab. The submit workflows default to the workflow commit; optionally enter a full commit SHA. The wait workflow requires a task ID, such as the one shown by Scout submit. The submit workflows limit Scout's input to `src/`, matching this repository's audit scope. Findings are reported but do not fail the workflow by severity.
+
+The workflows pin the actions to commit `9e6f48f4796c2cf30b9b50c332996b2d70c93fcb` because the action repository has not published its documented `v1` release yet.
+
 ## Expected Deliverable
 
 A useful review should identify any material issue, explain the execution path clearly, and describe realistic impact on reserve safety or protocol integrity.

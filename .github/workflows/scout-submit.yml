@@ -1,0 +1,39 @@
+name: Scout submit
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Full commit SHA to scan (defaults to the workflow commit)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Submit Scout scan
+        id: scout
+        uses: Veridise/audithub-actions/actions/scout/submit@9e6f48f4796c2cf30b9b50c332996b2d70c93fcb
+        with:
+          client-id: ${{ secrets.AUDITHUB_CLIENT_ID }}
+          client-secret: ${{ secrets.AUDITHUB_CLIENT_SECRET }}
+          organization-id: ${{ vars.AUDITHUB_ORGANIZATION_ID }}
+          project-id: ${{ vars.AUDITHUB_PROJECT_ID }}
+          scout-config: |
+            {
+              "budget": ${{ toJSON(vars.AUDITHUB_SCOUT_BUDGET) }},
+              "parameters": {"input_limit": ["src/"]}
+            }
+          commit: ${{ inputs.commit || github.sha }}
+      - name: Show task
+        env:
+          TASK_ID: ${{ steps.scout.outputs.task-id }}
+          TASK_URL: ${{ steps.scout.outputs.task-url }}
+        run: |
+          printf 'Task ID: %s\nAuditHub: %s\n' "$TASK_ID" "$TASK_URL"
+          printf 'Scout task ID: `%s`\n\n[Open in AuditHub](%s)\n' "$TASK_ID" "$TASK_URL" >> "$GITHUB_STEP_SUMMARY"

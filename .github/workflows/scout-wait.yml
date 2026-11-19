@@ -1,0 +1,33 @@
+name: Scout wait
+
+on:
+  workflow_dispatch:
+    inputs:
+      task-id:
+        description: AuditHub Scout task ID to wait for
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  wait:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Wait for Scout scan
+        id: scout
+        uses: Veridise/audithub-actions/actions/scout/wait@9e6f48f4796c2cf30b9b50c332996b2d70c93fcb
+        with:
+          client-id: ${{ secrets.AUDITHUB_CLIENT_ID }}
+          client-secret: ${{ secrets.AUDITHUB_CLIENT_SECRET }}
+          organization-id: ${{ vars.AUDITHUB_ORGANIZATION_ID }}
+          task-id: ${{ inputs['task-id'] }}
+      - name: Show results
+        env:
+          FINDINGS: ${{ steps.scout.outputs.findings-count }}
+          SEVERITIES: ${{ steps.scout.outputs.findings-by-severity }}
+        run: |
+          printf 'Findings: %s\nBy severity: %s\n' "$FINDINGS" "$SEVERITIES"
+          printf 'Scout findings: **%s**\n\nBy severity: `%s`\n' "$FINDINGS" "$SEVERITIES" >> "$GITHUB_STEP_SUMMARY"
