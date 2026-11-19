@@ -26,7 +26,7 @@ jobs:
           project-id: ${{ vars.AUDITHUB_PROJECT_ID }}
           scout-config: |
             {
-              "budget": ${{ toJSON(vars.AUDITHUB_SCOUT_BUDGET) }},
+              "budget": "Medium",
               "parameters": {"input_limit": ["src/"]}
             }
           commit: ${{ inputs.commit || github.sha }}

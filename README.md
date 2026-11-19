@@ -69,7 +69,7 @@ Three manually triggered workflows use the [AuditHub Scout actions](https://gith
 | [Scout wait](.github/workflows/scout-wait.yml) | Wait for an existing task ID and report finding counts. |
 | [Scout submit and wait](.github/workflows/scout-submit-and-wait.yml) | Start a scan and wait for its finding counts in one run. |
 
-Set the repository secrets `AUDITHUB_CLIENT_ID` and `AUDITHUB_CLIENT_SECRET`, and the repository variables `AUDITHUB_ORGANIZATION_ID`, `AUDITHUB_PROJECT_ID`, and `AUDITHUB_SCOUT_BUDGET` before running them. The OIDC client needs access to the AuditHub organization and project, permission to create versions and Scout tasks, and permission to read task details. The budget variable must name an available Scout budget class.
+Set the repository secrets `AUDITHUB_CLIENT_ID` and `AUDITHUB_CLIENT_SECRET`, and the repository variables `AUDITHUB_ORGANIZATION_ID` and `AUDITHUB_PROJECT_ID` before running them. The OIDC client needs access to the AuditHub organization and project, permission to create versions and Scout tasks, and permission to read task details. The submit workflows use the `Medium` Scout budget class.
 
 Run a workflow from the repository's **Actions** tab. The submit workflows default to the workflow commit; optionally enter a full commit SHA. The wait workflow requires a task ID, such as the one shown by Scout submit. The submit workflows limit Scout's input to `src/`, matching this repository's audit scope. Findings are reported but do not fail the workflow by severity.
 
